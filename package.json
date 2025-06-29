@@ -7,7 +7,19 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-typed-api": "npx @hey-api/openapi-ts -i https://raw.githubusercontent.com/PokeAPI/pokeapi/refs/heads/master/openapi.yml -o src/client"
+    "test": "playwright test",
+    "test:integration": "playwright test tests/*.integration.spec.ts",
+    "test:e2e": "playwright test tests/*.e2e.spec.ts",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
+    "test:dark": "playwright test --project=dark-mode",
+    "test:report": "playwright show-report",
+    "generate-typed-api": "npx @hey-api/openapi-ts -i https://raw.githubusercontent.com/PokeAPI/pokeapi/refs/heads/master/openapi.yml -o src/client",
+    "postinstall": "npx playwright install"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
@@ -30,6 +42,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@hey-api/openapi-ts": "^0.77.0",
+    "@playwright/test": "^1.53.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
