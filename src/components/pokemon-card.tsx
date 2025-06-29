@@ -63,17 +63,18 @@ export function PokemonCard({ pokemon }: PokemonCardProps) {
           </div>
 
           <div className="text-center">
-            <div className="flex flex-wrap justify-center gap-1">
+            <ul className="flex flex-wrap justify-center gap-1">
               {pokemon.types?.length ? (
                 pokemon.types.map((type) => (
                   <Badge
                     key={type.type.name}
+                    asChild
                     variant="outline"
                     className={`capitalize px-2 py-1 text-xs font-medium ${getTypeColor(
                       type.type.name
                     )}`}
                   >
-                    {type.type.name}
+                    <li>{type.type.name}</li>
                   </Badge>
                 ))
               ) : (
@@ -84,7 +85,7 @@ export function PokemonCard({ pokemon }: PokemonCardProps) {
                   Unknown
                 </Badge>
               )}
-            </div>
+            </ul>
           </div>
         </div>
       </div>

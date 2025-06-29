@@ -8,7 +8,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <article className="container mx-auto px-4 py-8">
       {/* Header */}
       <header className="text-center mb-6">
         <div className="flex justify-between items-center">
@@ -29,6 +29,6 @@ export default function Home() {
           Showing search results for &quot;{searchQuery}&quot;
         </div>
       )}
-    </div>
+    </article>
   );
 }
