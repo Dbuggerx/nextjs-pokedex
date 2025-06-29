@@ -53,24 +53,24 @@ const transformToPokemon = (data: unknown): Pokemon | null => {
     const pokemonData = data as {
       id: number;
       name: string;
-      types: Array<{
+      types?: Array<{
         slot: number;
         type: {
           name: string;
           url: string;
         };
       }>;
-      sprites: {
-        front_default?: string;
+      sprites?: {
+        front_default?: string | null;
         other?: {
           "official-artwork"?: {
-            front_default?: string;
+            front_default?: string | null;
           };
-        };
-      };
-      height: number;
-      weight: number;
-      stats: Array<{
+        } | null;
+      } | null;
+      height?: number;
+      weight?: number;
+      stats?: Array<{
         base_stat: number;
         stat: {
           name: string;
@@ -79,32 +79,32 @@ const transformToPokemon = (data: unknown): Pokemon | null => {
     };
 
     // Validate and transform types
-    const types = pokemonData.types.map((t) => ({
-      slot: t.slot,
+    const types = (pokemonData.types || []).map((t) => ({
+      slot: t.slot || 1,
       type: {
-        name: isPokemonType(t.type.name) ? t.type.name : "normal" as const,
-        url: t.type.url,
+        name: t?.type?.name && isPokemonType(t.type.name) ? t.type.name : "normal" as const,
+        url: t?.type?.url || '',
       },
     }));
 
     return {
-      id: pokemonData.id,
-      name: pokemonData.name,
+      id: pokemonData.id || 0,
+      name: pokemonData.name || 'unknown',
       types,
       sprites: {
-        front_default: pokemonData.sprites.front_default || "",
+        front_default: pokemonData.sprites?.front_default || "",
         other: {
           "official-artwork": {
-            front_default: pokemonData.sprites.other?.["official-artwork"]?.front_default || "",
+            front_default: pokemonData.sprites?.other?.["official-artwork"]?.front_default || "",
           },
         },
       },
       height: pokemonData.height || 0,
       weight: pokemonData.weight || 0,
-      stats: pokemonData.stats.map((s) => ({
-        base_stat: s.base_stat,
+      stats: (pokemonData.stats || []).map((s) => ({
+        base_stat: s?.base_stat || 0,
         stat: {
-          name: s.stat.name,
+          name: s?.stat?.name || 'unknown',
         },
       })),
     };

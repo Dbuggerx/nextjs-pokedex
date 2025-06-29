@@ -49,7 +49,7 @@ export function PokemonCard({ pokemon }: PokemonCardProps) {
             <Image
               src={
                 pokemon.sprites?.other?.["official-artwork"]?.front_default ||
-                "/pokeball.png"
+                "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/master-ball.png"
               }
               alt={pokemon?.name || "Pokemon"}
               fill
