@@ -1,38 +1,68 @@
-👉 Work in progress!
+# Next.js Pokédex
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+A modern, responsive Pokédex web application built with Next.js, TypeScript, React Query and Tailwind CSS. This application allows users to browse, search, and explore Pokémon with a beautiful and intuitive interface.
 
-## Getting Started
+## ✨ Features
 
-First, run the development server:
+- 🔍 Search and filter Pokémon
+- 📱 Responsive design that works on all devices
+- 🌓 Light and dark mode support
+- ⚡ Fast performance with React Query for data fetching
+- 🎨 Beautiful UI with Radix UI and Tailwind CSS
+- 🧪 Comprehensive test coverage with Playwright
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Getting Started
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Prerequisites
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 20.0.0 or later
+- npm
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Installation
 
-## Learn More
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Dbuggerx/nextjs-pokedex.git
+   cd nextjs-pokedex
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-## Deploy on Vercel
+## 🛠️ Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Available Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `dev` - Start the development server
+- `build` - Build the application for production
+- `start` - Start the production server
+- `lint` - Run ESLint
+- `test` - Run all tests
+- `test:ui` - Run tests with UI mode
+- `test:debug` - Run tests in debug mode
+- `generate-typed-api` - Generate TypeScript types from the PokéAPI OpenAPI spec
+
+### Tech Stack
+
+- [React](https://reactjs.org/) - JavaScript library for building user interfaces
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type checking
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [Radix UI](https://www.radix-ui.com/) - Accessible UI components
+- [React Query](https://tanstack.com/query) - Data fetching and state management
+- [Playwright](https://playwright.dev/) - Reliable testing framework
+- [PokéAPI](https://pokeapi.co/) - Pokémon data
+
+----
+
+This is an ongoing project that's being actively developed.
+
