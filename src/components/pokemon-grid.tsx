@@ -10,7 +10,6 @@ import {
   usePokemonIntersectionObserver,
   ITEMS_PER_PAGE,
 } from "@/hooks/use-pokemon";
-import type { Pokemon } from "@/lib/types";
 
 interface PokemonGridProps {
   searchQuery: string;

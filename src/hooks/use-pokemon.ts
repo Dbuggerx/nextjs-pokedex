@@ -2,9 +2,14 @@ import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { pokemonApi } from "@/lib/pokemon-api";
 import { useCallback, useDeferredValue, useRef, useEffect } from "react";
 import type { Pokemon, PokemonType } from "@/lib/types";
+import {
+  PaginatedPokemonSummaryListReadable,
+  PokemonDetailReadable as BasePokemonDetailReadable,
+  PokemonSummaryReadable,
+} from "@/client";
 
 // Helper function to fetch Pokemon details
-const fetchPokemonDetails = async (name: string): Promise<Pokemon | null> => {
+const fetchPokemonDetails = async (name: string) => {
   try {
     const pokemonData = await pokemonApi.getPokemon(name);
     return transformToPokemon(pokemonData);
@@ -16,86 +21,58 @@ const fetchPokemonDetails = async (name: string): Promise<Pokemon | null> => {
 
 export const ITEMS_PER_PAGE = 24;
 
-// Types for the Pokemon API responses
-interface PokemonSummary {
-  name: string;
-  url: string;
-}
-
-interface PokemonListResponse {
-  results: PokemonSummary[];
-  next: string | null;
-  previous: string | null;
-  count: number;
-}
-
-export interface PokemonInfiniteQueryData {
-  results: Pokemon[];
-  next: string | null;
-  previous: string | null;
-  count: number;
-}
-
 // Helper function to validate Pokemon types
 const isPokemonType = (type: string): type is PokemonType => {
   return [
-    "normal", "fire", "water", "electric", "grass", "ice",
-    "fighting", "poison", "ground", "flying", "psychic", "bug",
-    "rock", "ghost", "dragon", "dark", "steel", "fairy"
+    "normal",
+    "fire",
+    "water",
+    "electric",
+    "grass",
+    "ice",
+    "fighting",
+    "poison",
+    "ground",
+    "flying",
+    "psychic",
+    "bug",
+    "rock",
+    "ghost",
+    "dragon",
+    "dark",
+    "steel",
+    "fairy",
   ].includes(type);
 };
 
 // Helper function to transform API response to our Pokemon type
-const transformToPokemon = (data: unknown): Pokemon | null => {
-  if (!data || typeof data !== 'object') return null;
+const transformToPokemon = (pokemonData: PokemonDetailReadable | undefined) => {
+  if (!pokemonData) return null;
 
   try {
-    const pokemonData = data as {
-      id: number;
-      name: string;
-      types?: Array<{
-        slot: number;
-        type: {
-          name: string;
-          url: string;
-        };
-      }>;
-      sprites?: {
-        front_default?: string | null;
-        other?: {
-          "official-artwork"?: {
-            front_default?: string | null;
-          };
-        } | null;
-      } | null;
-      height?: number;
-      weight?: number;
-      stats?: Array<{
-        base_stat: number;
-        stat: {
-          name: string;
-        };
-      }>;
-    };
-
     // Validate and transform types
     const types = (pokemonData.types || []).map((t) => ({
       slot: t.slot || 1,
       type: {
-        name: t?.type?.name && isPokemonType(t.type.name) ? t.type.name : "normal" as const,
-        url: t?.type?.url || '',
+        name:
+          t?.type?.name && isPokemonType(t.type.name)
+            ? t.type.name
+            : ("normal" as const),
+        url: t?.type?.url || "",
       },
     }));
 
     return {
       id: pokemonData.id || 0,
-      name: pokemonData.name || 'unknown',
+      name: pokemonData.name || "unknown",
       types,
       sprites: {
         front_default: pokemonData.sprites?.front_default || "",
         other: {
           "official-artwork": {
-            front_default: pokemonData.sprites?.other?.["official-artwork"]?.front_default || "",
+            front_default:
+              pokemonData.sprites?.other?.["official-artwork"]?.front_default ||
+              "",
           },
         },
       },
@@ -104,7 +81,7 @@ const transformToPokemon = (data: unknown): Pokemon | null => {
       stats: (pokemonData.stats || []).map((s) => ({
         base_stat: s?.base_stat || 0,
         stat: {
-          name: s?.stat?.name || 'unknown',
+          name: s?.stat?.name || "unknown",
         },
       })),
     };
@@ -114,7 +91,9 @@ const transformToPokemon = (data: unknown): Pokemon | null => {
   }
 };
 
-const transformPokemonList = async (listResponse: PokemonListResponse): Promise<PokemonInfiniteQueryData> => {
+const transformPokemonList = async (
+  listResponse: PaginatedPokemonSummaryListReadable
+) => {
   if (!listResponse?.results) {
     throw new Error("Failed to fetch Pokémon list");
   }
@@ -141,14 +120,21 @@ const transformPokemonList = async (listResponse: PokemonListResponse): Promise<
 };
 
 export const usePokemonInfiniteQuery = () => {
-  return useInfiniteQuery<PokemonInfiniteQueryData, Error>({
+  return useInfiniteQuery({
     queryKey: ["infinite-pokemon"],
     queryFn: async ({ pageParam = 0 }) => {
-      const listResponse = await pokemonApi.getPokemonList(
-        ITEMS_PER_PAGE,
-        Number(pageParam) * ITEMS_PER_PAGE
-      ) as PokemonListResponse;
-      return transformPokemonList(listResponse);
+      try {
+        const listResponse = await pokemonApi.getPokemonList(
+          ITEMS_PER_PAGE,
+          Number(pageParam) * ITEMS_PER_PAGE
+        );
+        return listResponse
+          ? await transformPokemonList(listResponse)
+          : { results: [], count: 0 };
+      } catch (error) {
+        console.error("Error fetching Pokemon list:", error);
+        return { results: [], count: 0 };
+      }
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
@@ -163,11 +149,11 @@ export const usePokemonInfiniteQuery = () => {
 };
 
 export const useAllPokemonList = () => {
-  return useQuery<PokemonSummary[]>({
-    queryKey: ["all-pokemon"],
+  return useQuery({
+    queryKey: ["all-pokemon-names"],
     queryFn: async () => {
-      const response = await pokemonApi.getPokemonList(2000, 0) as PokemonListResponse;
-      return response.results;
+      const response = await pokemonApi.getPokemonList(1000, 0);
+      return response?.results;
     },
     staleTime: Infinity,
     gcTime: Infinity,
@@ -175,20 +161,26 @@ export const useAllPokemonList = () => {
 };
 
 export const usePokemonTransform = () => {
-  const transform = useCallback((data: unknown): Pokemon | null => {
-    return transformToPokemon(data);
-  }, []);
+  const transform = useCallback(
+    (data: BasePokemonDetailReadable): Pokemon | null => {
+      return transformToPokemon(data);
+    },
+    []
+  );
 
   return { transformToPokemon: transform };
 };
 
-export const usePokemonSearch = (searchQuery: string, allPokemonList: PokemonSummary[] = []) => {
+export const usePokemonSearch = (
+  searchQuery: string,
+  allPokemonList: PokemonSummaryReadable[] = []
+) => {
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const { transformToPokemon } = usePokemonTransform();
 
-  return useQuery<Pokemon[]>({
+  return useQuery({
     queryKey: ["pokemon-search", deferredSearchQuery],
-    queryFn: async (): Promise<Pokemon[]> => {
+    queryFn: async () => {
       const query = deferredSearchQuery.trim().toLowerCase();
       if (!query) return [];
 
@@ -211,7 +203,9 @@ export const usePokemonSearch = (searchQuery: string, allPokemonList: PokemonSum
         if (matchingPokemon.length === 0) return [];
 
         // Fetch full details for matching pokemon
-        const pokemonDetails = await Promise.all(matchingPokemon.map(fetchPokemonDetails));
+        const pokemonDetails = await Promise.all(
+          matchingPokemon.map(fetchPokemonDetails)
+        );
         return pokemonDetails.filter((p): p is Pokemon => p !== null);
       } catch (error) {
         console.error("Error searching for Pokémon:", error);
@@ -265,7 +259,27 @@ export const usePokemonIntersectionObserver = ({
         observer.unobserve(currentRef);
       }
     };
-  }, [isLoading, isFetchingNextPage, hasNextPage, showSearchResults, fetchNextPage]);
+  }, [
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    showSearchResults,
+    fetchNextPage,
+  ]);
 
   return { loadMoreRef };
 };
+
+// Extend the PokemonDetailReadable type to include the full sprites structure
+interface PokemonDetailReadable
+  extends Omit<BasePokemonDetailReadable, "sprites"> {
+  sprites: {
+    front_default?: string;
+    other?: {
+      "official-artwork"?: {
+        front_default?: string;
+      };
+    };
+    [key: string]: unknown;
+  };
+}
