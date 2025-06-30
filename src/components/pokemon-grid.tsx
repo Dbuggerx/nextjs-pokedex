@@ -9,7 +9,6 @@ import {
   usePokemonSearch,
   usePokemonIntersectionObserver,
   ITEMS_PER_PAGE,
-  type PokemonInfiniteQueryData
 } from "@/hooks/use-pokemon";
 import type { Pokemon } from "@/lib/types";
 
@@ -57,7 +56,7 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
 
   // Flatten all pages of pokemon details
   const allPokemon = useMemo(() => {
-    return pages.flatMap((page: PokemonInfiniteQueryData) => page.results || []);
+    return pages.flatMap((page) => page.results || []);
   }, [pages]);
 
   // Combine loading states
@@ -131,26 +130,23 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
   }
 
   return (
-    <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {filteredPokemon.map((pokemon: Pokemon) => (
-          <PokemonCard key={pokemon.id} pokemon={pokemon} />
-        ))}
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      {/* Pokemon cards */}
+      {filteredPokemon.map((pokemon) => (
+        <PokemonCard key={pokemon.id} pokemon={pokemon} />
+      ))}
 
-      {/* Loading indicator at the bottom */}
-      {!showSearchResults && isFetchingNextPage && (
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <PokemonCardSkeleton key={`skeleton-${index}`} />
-          ))}
-        </div>
-      )}
+      {/* Loading indicator */}
+      {!showSearchResults && isFetchingNextPage &&
+        Array.from({ length: 4 }).map((_, index) => (
+          <PokemonCardSkeleton key={`skeleton-${index}`} />
+        ))
+      }
 
       {/* Intersection Observer target */}
       {!showSearchResults && hasNextPage && (
-        <div ref={loadMoreRef} className="h-4 w-full" />
+        <div ref={loadMoreRef} className="h-4 w-full col-span-full" />
       )}
-    </>
+    </div>
   );
 }
