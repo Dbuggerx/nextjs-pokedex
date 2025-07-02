@@ -2,7 +2,11 @@ import { Pokemon } from "@/lib/types";
 import { PokemonImage } from "@/components/pokemon-image";
 import { PokemonStats } from "@/components/pokemon-stats";
 import { getTypeColor } from "@/lib/pokemon-utils";
-import { formatPokemonId, formatWeight, formatHeight } from "@/lib/pokemon-utils";
+import {
+  formatPokemonId,
+  formatWeight,
+  formatHeight,
+} from "@/lib/pokemon-utils";
 import { Weight, Ruler, Zap } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +25,11 @@ type PokemonAbility = {
   is_hidden: boolean;
 };
 
-export function PokemonDetails({ pokemon, genus, description }: PokemonDetailsProps) {
+export function PokemonDetails({
+  pokemon,
+  genus,
+  description,
+}: PokemonDetailsProps) {
   return (
     <>
       {/* Main Pokemon Card */}
@@ -52,16 +60,19 @@ export function PokemonDetails({ pokemon, genus, description }: PokemonDetailsPr
                   Types
                 </h3>
                 <div className="flex gap-2">
-                  {pokemon.types.map((type) => (
-                    <Badge
-                      key={type.type.name}
-                      className={`bg-gradient-to-r ${getTypeColor(
-                        type.type.name
-                      )} text-white border-0 px-4 py-2 text-sm capitalize`}
-                    >
-                      {type.type.name}
-                    </Badge>
-                  ))}
+                  <ul className="flex flex-wrap justify-center gap-2">
+                    {pokemon.types.map((type) => (
+                      <Badge
+                        key={type.type.name}
+                        className={`bg-gradient-to-r ${getTypeColor(
+                          type.type.name
+                        )} text-white border-0 px-4 py-2 text-sm capitalize`}
+                        asChild
+                      >
+                        <li>{type.type.name}</li>
+                      </Badge>
+                    ))}
+                  </ul>
                 </div>
               </div>
 

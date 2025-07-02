@@ -18,6 +18,7 @@ export function PokemonNavigation({ pokemonId, onNavigate }: PokemonNavigationPr
           size="sm"
           onClick={() => onNavigate("prev")}
           disabled={pokemonId <= 1}
+          title="Previous Pokemon"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -26,6 +27,7 @@ export function PokemonNavigation({ pokemonId, onNavigate }: PokemonNavigationPr
           size="sm"
           onClick={() => onNavigate("next")}
           disabled={pokemonId >= 151}
+          title="Next Pokemon"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

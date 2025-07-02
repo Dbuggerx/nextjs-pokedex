@@ -68,30 +68,41 @@ export default function PokemonDetail() {
 
   const {
     data: pokemonData,
-    isLoading,
-    error,
-  } = useQuery<PokemonDetailReadable>({
+    isLoading: isPokemonLoading,
+    error: pokemonError,
+  } = useQuery({
     queryKey: ["pokemon", pokemonId],
-    queryFn: () =>
-      pokemonApi
-        .getPokemon(pokemonId)
-        .then((res) => res as PokemonDetailReadable),
+    queryFn: () => pokemonApi.getPokemon(pokemonId),
+    retry: false,
   });
 
   const pokemon = pokemonData ? mapToPokemon(pokemonData) : null;
 
-  const { data: species } = useQuery({
+  const { data: species, isLoading: isSpeciesLoading } = useQuery({
     queryKey: ["pokemon-species", pokemonId],
     queryFn: () => pokemonApi.getPokemonSpecies(pokemonId),
-    enabled: !!pokemon,
+    enabled: !!pokemonData, // Only fetch if we have pokemon data
+    retry: false,
   });
 
-  if (isLoading || !pokemon) {
+  // Handle loading state
+  if (isPokemonLoading || (pokemonData && isSpeciesLoading)) {
     return <LoadingSkeleton />;
   }
 
-  if (error || !pokemon) {
-    return <ErrorState pokemonId={pokemonId} onNavigate={navigatePokemon} />;
+  // Handle error state or not found
+  if (pokemonError || !pokemonData || !pokemon) {
+    return (
+      <ErrorState 
+        pokemonId={pokemonId} 
+        onNavigate={navigatePokemon} 
+        errorMessage={
+          (pokemonError as { response?: { status: number } })?.response?.status === 404 
+            ? "Pokémon not found" 
+            : "Failed to load Pokémon details"
+        }
+      />
+    );
   }
 
   const description =

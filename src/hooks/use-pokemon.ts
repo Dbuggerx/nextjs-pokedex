@@ -46,7 +46,7 @@ export const isPokemonType = (type: string): type is PokemonType => {
 };
 
 // Helper function to transform API response to our Pokemon type
-const transformToPokemon = (pokemonData: PokemonDetailReadable | undefined) => {
+const transformToPokemon = (pokemonData: PokemonDetailReadable | null) => {
   if (!pokemonData) return null;
 
   try {

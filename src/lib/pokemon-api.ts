@@ -1,4 +1,9 @@
-import { apiV2PokemonList, apiV2PokemonRetrieve, apiV2PokemonSpeciesRetrieve } from "@/client";
+import {
+  apiV2PokemonList,
+  apiV2PokemonRetrieve,
+  apiV2PokemonSpeciesRetrieve,
+  PokemonDetailReadable,
+} from "@/client";
 
 export const pokemonApi = {
   // Get list of Pokémon
@@ -10,24 +15,27 @@ export const pokemonApi = {
           offset,
         },
       });
+      if (response.error) throw response.error;
       return response.data;
     } catch (error) {
-      console.error("Error fetching Pokémon list:", error);
       throw error;
     }
   },
 
   // Get a single Pokémon by name or ID
-  getPokemon: async (nameOrId: string | number) => {
+  getPokemon: async (nameOrId: string | number): Promise<PokemonDetailReadable | null> => {
     try {
       const response = await apiV2PokemonRetrieve({
         path: {
-          id: nameOrId.toString()
-        }
+          id: nameOrId.toString(),
+        },
       });
-      return response.data;
+      if (response.error) throw response.error;
+      return response.data ?? null;
     } catch (error) {
-      console.error(`Error fetching Pokémon ${nameOrId}:`, error);
+      if ((error as { response?: { status: number } })?.response?.status === 404) {
+        return null;
+      }
       throw error;
     }
   },
@@ -37,12 +45,12 @@ export const pokemonApi = {
     try {
       const response = await apiV2PokemonSpeciesRetrieve({
         path: {
-          id: nameOrId.toString()
-        }
+          id: nameOrId.toString(),
+        },
       });
+      if (response.error) throw response.error;
       return response.data;
     } catch (error) {
-      console.error(`Error fetching Pokémon species ${nameOrId}:`, error);
       throw error;
     }
   },
@@ -61,4 +69,3 @@ export const pokemonApi = {
     }
   },
 };
-
