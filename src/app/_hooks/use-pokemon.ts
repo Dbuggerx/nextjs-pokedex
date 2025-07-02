@@ -6,7 +6,6 @@ import { isPokemonType } from "@/lib/pokemon-utils";
 import {
   PaginatedPokemonSummaryListReadable,
   PokemonDetailReadable as BasePokemonDetailReadable,
-  PokemonSummaryReadable,
 } from "@/client";
 
 // Helper function to fetch Pokemon details
@@ -126,7 +125,7 @@ export const usePokemonInfiniteQuery = () => {
   });
 };
 
-export const useAllPokemonList = () => {
+const useAllPokemonNames = () => {
   return useQuery({
     queryKey: ["all-pokemon-names"],
     queryFn: async () => {
@@ -149,12 +148,10 @@ export const usePokemonTransform = () => {
   return { transformToPokemon: transform };
 };
 
-export const usePokemonSearch = (
-  searchQuery: string,
-  allPokemonList: PokemonSummaryReadable[] = []
-) => {
+export const usePokemonSearch = (searchQuery: string) => {
   const deferredSearchQuery = useDeferredValue(searchQuery);
   const { transformToPokemon } = usePokemonTransform();
+  const { data: allPokemonList = [] } = useAllPokemonNames();
 
   return useQuery({
     queryKey: ["pokemon-search", deferredSearchQuery],

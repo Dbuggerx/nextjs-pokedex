@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { SearchFilters } from "./_components/search-filters";
 import { PokemonGrid } from "./_components/pokemon-grid";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+    setIsInitialLoad(false);
+  }, []);
 
   return (
     <article className="container mx-auto px-4 py-8">
@@ -21,9 +27,13 @@ export default function Home() {
       {/* Search and Filters */}
       <SearchFilters
         searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        onSearchChange={handleSearchChange}
+        disabled={isInitialLoad}
       />
-      <PokemonGrid searchQuery={searchQuery} />
+      <PokemonGrid 
+        searchQuery={searchQuery} 
+        onLoadStateChange={setIsInitialLoad}
+      />
       {searchQuery && (
         <div className="mt-8 text-center text-sm text-muted-foreground">
           Showing search results for &quot;{searchQuery}&quot;

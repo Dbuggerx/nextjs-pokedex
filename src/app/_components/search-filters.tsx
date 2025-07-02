@@ -8,11 +8,13 @@ import { Search, X } from "lucide-react";
 interface SearchFiltersProps {
   onSearchChange: (query: string) => void;
   searchQuery: string;
+  disabled?: boolean;
 }
 
 export function SearchFilters({
   onSearchChange,
   searchQuery,
+  disabled = false,
 }: SearchFiltersProps) {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const deferredSearch = useDeferredValue(localSearch);
@@ -36,7 +38,8 @@ export function SearchFilters({
           placeholder="Search Pokémon..."
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
-          className="pl-10 pr-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-gray-200 dark:border-gray-700"
+          disabled={disabled}
+          className="pl-10 pr-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
         />
         {localSearch && (
           <Button

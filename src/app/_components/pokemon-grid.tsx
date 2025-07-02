@@ -1,11 +1,8 @@
-"use client";
-
 import { PokemonCard } from "./pokemon-card";
 import { PokemonCardSkeleton } from "./pokemon-card-skeleton";
-import { useMemo, useDeferredValue } from "react";
+import { useMemo, useDeferredValue, useEffect } from "react";
 import { 
   usePokemonInfiniteQuery, 
-  useAllPokemonList, 
   usePokemonSearch,
   usePokemonIntersectionObserver,
   ITEMS_PER_PAGE,
@@ -13,30 +10,25 @@ import {
 
 interface PokemonGridProps {
   searchQuery: string;
+  onLoadStateChange?: (isLoading: boolean) => void;
 }
 
-export function PokemonGrid({ searchQuery }: PokemonGridProps) {
+export function PokemonGrid({ searchQuery, onLoadStateChange }: PokemonGridProps) {
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
   // Use custom hooks for data fetching and state management
   const {
-    data: infiniteData,
+    data: infiniteData = { pages: [] },
     fetchNextPage,
     hasNextPage = false,
     isFetchingNextPage,
     isLoading: isLoadingInfinite,
   } = usePokemonInfiniteQuery();
-  
-  // Ensure infiniteData.pages is always defined
-  const pages = useMemo(() => infiniteData?.pages || [], [infiniteData?.pages]);
-
-  // Get all pokemon list for search
-  const { data: allPokemonList = [] } = useAllPokemonList();
 
   // Handle pokemon search
-  const { data: searchResults, isPending: isSearching } = usePokemonSearch(deferredSearchQuery, allPokemonList);
+  const { data: searchResults, isPending: isSearching } = usePokemonSearch(deferredSearchQuery);
 
-  // Memoized search results with proper typing
+  // Memoize the search results object to prevent unnecessary re-renders
   const searchPokemonResults = useMemo(
     () => ({
       data: searchResults || [],
@@ -53,8 +45,8 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
 
   // Flatten all pages of pokemon details
   const allPokemon = useMemo(() => {
-    return pages.flatMap((page) => page.results || []);
-  }, [pages]);
+    return infiniteData.pages.flatMap((page) => page.results || []);
+  }, [infiniteData.pages]);
 
   // Combine loading states
   const isLoading = useMemo(() => {
@@ -63,11 +55,11 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
              (showSearchResults && searchPokemonResults.data.length === 0);
     }
     // When not searching, show loading only if we're loading the first page
-    return isLoadingInfinite && pages.length === 0;
+    return isLoadingInfinite && infiniteData.pages.length === 0;
   }, [
     deferredSearchQuery.length,
     isLoadingInfinite,
-    pages.length,
+    infiniteData.pages.length,
     searchPokemonResults.data.length,
     searchPokemonResults.isPending,
     showSearchResults
@@ -95,6 +87,13 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
 
   // Use displayPokemon directly since we're not filtering by type anymore
   const filteredPokemon = displayPokemon || [];
+
+  // Notify parent when initial load is complete
+  useEffect(() => {
+    if (onLoadStateChange && !isLoading && allPokemon.length > 0) {
+      onLoadStateChange(false);
+    }
+  }, [isLoading, allPokemon.length, onLoadStateChange]);
 
   if (isLoading && !allPokemon.length) {
     return (
