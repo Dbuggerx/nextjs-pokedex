@@ -22,7 +22,7 @@
     "test:dark": "playwright test --project=dark-mode",
     "test:report": "playwright show-report",
     "generate-typed-api": "npx @hey-api/openapi-ts -i https://raw.githubusercontent.com/PokeAPI/pokeapi/refs/heads/master/openapi.yml -o src/client",
-    "postinstall": "npx playwright install"
+    "postinstall": "if [ -z \"$CI\" ]; then npx playwright install --with-deps; fi"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
