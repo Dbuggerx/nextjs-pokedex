@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Atom } from "lucide-react";
+import { LastPathTracker } from "@/components/last-path-tracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,8 +32,9 @@ export default function RootLayout({
       suppressHydrationWarning // Recommended by next-themes to prevent hydration mismatches. Only affects direct children.
     >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
+        <LastPathTracker />
         <Providers>
           <header className="border-b">
             <div className="container mx-auto px-4 py-4">
