@@ -1,5 +1,29 @@
 import { PokemonType } from "./types";
 
+// Type guard to validate if a string is a valid PokemonType
+export const isPokemonType = (type: string): type is PokemonType => {
+  return [
+    "normal",
+    "fire",
+    "water",
+    "electric",
+    "grass",
+    "ice",
+    "fighting",
+    "poison",
+    "ground",
+    "flying",
+    "psychic",
+    "bug",
+    "rock",
+    "ghost",
+    "dragon",
+    "dark",
+    "steel",
+    "fairy",
+  ].includes(type);
+};
+
 export const getTypeColor = (type: PokemonType): string => {
   const colors: Record<PokemonType, string> = {
     normal: "from-gray-400 to-gray-500",

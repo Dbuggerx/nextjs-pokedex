@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { BackToPokedexButton } from "@/app/pokemon/[id]/components/back-to-pokedex-button";
+import { BackToPokedexButton } from "./back-to-pokedex-button";
 
 interface PokemonNavigationProps {
   pokemonId: number;

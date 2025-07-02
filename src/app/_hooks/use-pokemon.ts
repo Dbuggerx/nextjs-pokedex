@@ -1,7 +1,8 @@
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { pokemonApi } from "@/lib/pokemon-api";
 import { useCallback, useDeferredValue, useRef, useEffect } from "react";
-import type { Pokemon, PokemonType } from "@/lib/types";
+import type { Pokemon } from "@/lib/types";
+import { isPokemonType } from "@/lib/pokemon-utils";
 import {
   PaginatedPokemonSummaryListReadable,
   PokemonDetailReadable as BasePokemonDetailReadable,
@@ -20,30 +21,6 @@ const fetchPokemonDetails = async (name: string) => {
 };
 
 export const ITEMS_PER_PAGE = 24;
-
-// Helper function to validate Pokemon types
-export const isPokemonType = (type: string): type is PokemonType => {
-  return [
-    "normal",
-    "fire",
-    "water",
-    "electric",
-    "grass",
-    "ice",
-    "fighting",
-    "poison",
-    "ground",
-    "flying",
-    "psychic",
-    "bug",
-    "rock",
-    "ghost",
-    "dragon",
-    "dark",
-    "steel",
-    "fairy",
-  ].includes(type);
-};
 
 // Helper function to transform API response to our Pokemon type
 const transformToPokemon = (pokemonData: PokemonDetailReadable | null) => {

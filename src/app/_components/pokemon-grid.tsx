@@ -9,7 +9,7 @@ import {
   usePokemonSearch,
   usePokemonIntersectionObserver,
   ITEMS_PER_PAGE,
-} from "@/hooks/use-pokemon";
+} from "../_hooks/use-pokemon";
 
 interface PokemonGridProps {
   searchQuery: string;

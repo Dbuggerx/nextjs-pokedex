@@ -1,4 +1,4 @@
-import { PokemonNavigation } from "@/app/pokemon/[id]/components/pokemon-navigation";
+import { PokemonNavigation } from "./pokemon-navigation";
 
 type ErrorStateProps = {
   pokemonId: number;

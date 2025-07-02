@@ -1,3 +1,5 @@
+"use client";
+
 import { Pokemon } from '@/lib/types';
 import { Progress } from '@/components/ui/progress';
 import { formatStatName } from '@/lib/pokemon-utils';

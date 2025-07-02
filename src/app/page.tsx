@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { SearchFilters } from "@/components/search-filters";
-import { PokemonGrid } from "@/components/pokemon-grid";
+import { SearchFilters } from "./_components/search-filters";
+import { PokemonGrid } from "./_components/pokemon-grid";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");

@@ -3,13 +3,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { pokemonApi } from "@/lib/pokemon-api";
-import { PokemonNavigation } from "@/app/pokemon/[id]/components/pokemon-navigation";
-import { PokemonDetails } from "./pokemon-details";
+import { PokemonNavigation } from "./_components/pokemon-navigation";
+import { PokemonDetails } from "./_components/pokemon-details";
 import { Pokemon } from "@/lib/types";
-import { LoadingSkeleton } from "./components/loading-skeleton";
+import { LoadingSkeleton } from "./_components/loading-skeleton";
 import { PokemonDetailReadable } from "@/client";
-import { isPokemonType } from "@/hooks/use-pokemon";
-import { ErrorState } from "./components/error-state";
+import { isPokemonType } from "@/lib/pokemon-utils";
+import { ErrorState } from "./_components/error-state";
 
 // Helper function to map API response to our local Pokemon type
 const mapToPokemon = (data: PokemonDetailReadable): Pokemon => ({

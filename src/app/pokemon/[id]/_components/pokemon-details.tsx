@@ -1,7 +1,7 @@
 import { Pokemon } from "@/lib/types";
 import { PokemonImage } from "@/components/pokemon-image";
-import { PokemonStats } from "@/components/pokemon-stats";
 import { getTypeColor } from "@/lib/pokemon-utils";
+import { PokemonStats } from "./pokemon-stats";
 import {
   formatPokemonId,
   formatWeight,

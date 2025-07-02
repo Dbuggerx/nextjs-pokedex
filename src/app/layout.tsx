@@ -4,7 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Atom } from "lucide-react";
-import { LastPathTracker } from "@/components/last-path-tracker";
+import { LastPathTracker } from "./_components/last-path-tracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
