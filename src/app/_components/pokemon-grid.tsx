@@ -45,12 +45,10 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
     [searchResults, isSearching]
   );
 
-  const safeSearchResults = searchPokemonResults.data;
-
   // Determine if we're showing search results or paginated list
   const showSearchResults = useMemo(
-    () => deferredSearchQuery.length > 0 && safeSearchResults.length > 0,
-    [deferredSearchQuery, safeSearchResults]
+    () => deferredSearchQuery.length > 0 && searchPokemonResults.data.length > 0,
+    [deferredSearchQuery, searchPokemonResults.data]
   );
 
   // Flatten all pages of pokemon details
@@ -62,7 +60,7 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
   const isLoading = useMemo(() => {
     if (deferredSearchQuery.length > 0) {
       return searchPokemonResults.isPending || 
-             (showSearchResults && safeSearchResults.length === 0);
+             (showSearchResults && searchPokemonResults.data.length === 0);
     }
     // When not searching, show loading only if we're loading the first page
     return isLoadingInfinite && pages.length === 0;
@@ -70,7 +68,7 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
     deferredSearchQuery.length,
     isLoadingInfinite,
     pages.length,
-    safeSearchResults.length,
+    searchPokemonResults.data.length,
     searchPokemonResults.isPending,
     showSearchResults
   ]);
@@ -108,15 +106,27 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
     );
   }
 
-  // Handle search with no results
-  if (deferredSearchQuery.length > 0 && safeSearchResults.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">
-          No Pokémon found matching &quot;{deferredSearchQuery}&quot;
-        </p>
-      </div>
-    );
+  // Handle search states
+  if (deferredSearchQuery.length > 0) {
+    if (isLoading) {
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <PokemonCardSkeleton key={`search-skeleton-${index}`} />
+          ))}
+        </div>
+      );
+    }
+    
+    if (searchPokemonResults.data.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">
+            No Pokémon found matching &quot;{deferredSearchQuery}&quot;
+          </p>
+        </div>
+      );
+    }
   }
 
   // Handle no results after filtering
