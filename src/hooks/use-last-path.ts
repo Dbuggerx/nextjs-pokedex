@@ -1,28 +1,47 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useLastPath(): string | null {
   const pathname = usePathname();
-  const previousPathRef = useRef<string | null>(null);
+  const [lastPath, setLastPath] = useState<string | null>(null);
   const currentPathRef = useRef<string | null>(null);
+  const isMounted = useRef(false);
 
-  // Only run this effect when pathname changes
+  // Initialize state on mount
   useEffect(() => {
-    // Only update the previous path if we have a current path and it's different from the new one
-    if (currentPathRef.current && currentPathRef.current !== pathname) {
-      previousPathRef.current = currentPathRef.current;
-      sessionStorage.setItem("lastPath", previousPathRef.current);
+    isMounted.current = true;
+    // Read from sessionStorage on mount
+    const storedPath = sessionStorage.getItem("lastPath");
+    if (storedPath) {
+      setLastPath(storedPath);
+    }
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  // Track path changes
+  useEffect(() => {
+    if (!isMounted.current) return;
+
+    const previousPath = currentPathRef.current;
+    
+    // Update previous path if current path is different and not null/undefined
+    if (previousPath && previousPath !== pathname) {
+      setLastPath(previousPath);
+      try {
+        sessionStorage.setItem("lastPath", previousPath);
+      } catch (e) {
+        console.warn("Failed to update last path in sessionStorage", e);
+      }
     }
     
-    // Always update the current path
+    // Update current path
     currentPathRef.current = pathname;
   }, [pathname]);
 
-  // Return the previous path from the ref or sessionStorage (only in browser)
-  if (typeof window !== 'undefined') {
-    return previousPathRef.current || sessionStorage.getItem("lastPath");
-  }
-  return previousPathRef.current;
+  return lastPath;
 }
