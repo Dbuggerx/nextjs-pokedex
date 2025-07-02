@@ -1,5 +1,3 @@
-// Pokemon type definitions
-
 export type PokemonType =
   | "normal"
   | "fire"
@@ -28,10 +26,20 @@ export interface PokemonTypeInfo {
   };
 }
 
+export interface PokemonAbility {
+  ability: {
+    name: string;
+    url: string;
+  };
+  is_hidden: boolean;
+  slot: number;
+}
+
 export interface Pokemon {
   id: number;
   name: string;
   types: PokemonTypeInfo[];
+  abilities?: PokemonAbility[];
   sprites: {
     front_default: string;
     other: {
@@ -42,10 +50,11 @@ export interface Pokemon {
   };
   height: number;
   weight: number;
-  stats: Array<{
+  stats: {
     base_stat: number;
     stat: {
       name: string;
+      url: string;
     };
-  }>;
+  }[];
 }
