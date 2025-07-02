@@ -137,7 +137,7 @@ export function PokemonGrid({ searchQuery }: PokemonGridProps) {
 
       {/* Loading indicator */}
       {!showSearchResults && isFetchingNextPage &&
-        Array.from({ length: 4 }).map((_, index) => (
+        Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
           <PokemonCardSkeleton key={`skeleton-${index}`} />
         ))
       }

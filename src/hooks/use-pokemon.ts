@@ -22,7 +22,7 @@ const fetchPokemonDetails = async (name: string) => {
 export const ITEMS_PER_PAGE = 24;
 
 // Helper function to validate Pokemon types
-const isPokemonType = (type: string): type is PokemonType => {
+export const isPokemonType = (type: string): type is PokemonType => {
   return [
     "normal",
     "fire",
@@ -82,6 +82,7 @@ const transformToPokemon = (pokemonData: PokemonDetailReadable | undefined) => {
         base_stat: s?.base_stat || 0,
         stat: {
           name: s?.stat?.name || "unknown",
+          url: s?.stat?.url || "",
         },
       })),
     };
@@ -246,7 +247,7 @@ export const usePokemonIntersectionObserver = ({
           fetchNextPage();
         }
       },
-      { threshold: 0.1 }
+      { rootMargin: '0px 0px 300px 0px' }
     );
 
     const currentRef = loadMoreRef.current;
